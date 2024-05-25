@@ -100,6 +100,19 @@ public class TransferMoneyTest {
     }
 
     @Test
+    @DisplayName("Should error transfer money when send zero amount")
+    void shouldErrorTransferMoneyWhenSendZero() {
+        String hiddenToCard = hiddenCard(cardTo.getNumber());
+
+        var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
+        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
+        var errorNotification = transferPage.sendMoneyWithError(0, cardFrom.getNumber());
+        errorNotification
+                .shouldBe(Condition.visible, Duration.ofSeconds(15))
+                .shouldHave(Condition.text("Ошибка! Произошла ошибка"));
+    }
+
+    @Test
     @DisplayName("Should error transfer money when send money without amount")
     void shouldErrorTransferMoneyWhenWithoutAmount () {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
