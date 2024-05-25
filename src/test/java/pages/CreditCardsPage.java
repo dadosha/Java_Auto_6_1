@@ -9,6 +9,7 @@ import static com.codeborne.selenide.Selenide.$;
 
 public class CreditCardsPage {
     private SelenideElement header = $("[data-test-id='dashboard']");
+    private SelenideElement updatePageButton = $("[data-test-id='action-reload']");
     public CreditCardsPage () {
         header.shouldBe(visible);
     }
@@ -25,6 +26,11 @@ public class CreditCardsPage {
     public int getCardBalance (String hiddenCardNumber) {
         String cardText = cardInfo(hiddenCardNumber).text();
         return Integer.parseInt(cardText.split(" ")[5]);
+    }
+
+    public TransferMoneyPage updateTransferPage () {
+        updatePageButton.click();
+        return new TransferMoneyPage();
     }
 
 }

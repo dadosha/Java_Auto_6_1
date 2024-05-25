@@ -47,6 +47,7 @@ public class TransferMoneyTest {
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
         transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var creditCardPageAfterPay = transferPage.successTransferMoney(transferAmount, cardFrom.getNumber());
+        creditCardPageAfterPay.updateTransferPage();
         creditCardPageAfterPay.cardInfo(hiddenToCard)
                 .shouldHave(Condition.exactText(hiddenToCard + ", баланс: " + String.valueOf(cardToBalance + transferAmount) + " р.\nПополнить"));
         creditCardPageAfterPay.cardInfo(hiddenFromCard)
@@ -64,6 +65,7 @@ public class TransferMoneyTest {
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
         transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var creditCardPageAfterPay = transferPage.successTransferMoney(cardFromBalance, cardFrom.getNumber());
+        creditCardPageAfterPay.updateTransferPage();
         creditCardPageAfterPay.cardInfo(hiddenToCard)
                 .shouldHave(Condition.exactText(hiddenToCard + ", баланс: " + String.valueOf(cardToBalance + cardFromBalance) + " р.\nПополнить"));
         creditCardPageAfterPay.cardInfo(hiddenFromCard)
