@@ -34,8 +34,15 @@ public class TransferMoneyTest {
         var verificationCodePage = loginPage.validLogin(validAuthInfo);
         creditCardPage = verificationCodePage.validCodeEnter(validVerificationCode);
         List<DataGenerator.Card> cards = chooseCard(List.of(getCorrectCard1(), getCorrectCard2()));
-        cardTo = cards.get(0);
-        cardFrom = cards.get(1);
+        String hiddenFromCard = hiddenCard(cards.get(0).getNumber());
+        if (creditCardPage.getCardBalance(hiddenFromCard) <= 0) {
+            cardTo = cards.get(0);
+            cardFrom = cards.get(1);
+        }
+        else {
+            cardTo = cards.get(1);
+            cardFrom = cards.get(0);
+        }
     }
 
     @Test
