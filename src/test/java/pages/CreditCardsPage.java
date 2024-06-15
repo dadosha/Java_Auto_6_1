@@ -1,7 +1,6 @@
 package pages;
 
 import com.codeborne.selenide.SelenideElement;
-import data.DataGenerator;
 
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
@@ -20,7 +19,7 @@ public class CreditCardsPage {
 
     public TransferMoneyPage openTransferCardPage (String hiddenCardNumber) {
         cardInfo(hiddenCardNumber).find("button").click();
-        return new TransferMoneyPage();
+        return new TransferMoneyPage(hiddenCardNumber);
     }
 
     public int getCardBalance (String hiddenCardNumber) {
@@ -28,9 +27,9 @@ public class CreditCardsPage {
         return Integer.parseInt(cardText.split(" ")[5]);
     }
 
-    public TransferMoneyPage updateTransferPage () {
+    public void updateCreditCardPage () {
         updatePageButton.click();
-        return new TransferMoneyPage();
+        new CreditCardsPage();
     }
 
 }

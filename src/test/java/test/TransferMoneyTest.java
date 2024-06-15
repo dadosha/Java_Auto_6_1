@@ -2,6 +2,7 @@ package test;
 
 import com.codeborne.selenide.Condition;
 import data.DataGenerator;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import static data.DataGenerator.*;
 import static data.DataGenerator.CardInfo.*;
 import static data.DataGenerator.LogIn.*;
 import static data.DataGenerator.LogInCode.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TransferMoneyTest {
     CreditCardsPage creditCardPage;
@@ -30,7 +33,7 @@ public class TransferMoneyTest {
         var validVerificationCode = getCorrectCode();
         var verificationCodePage = loginPage.validLogin(validAuthInfo);
         creditCardPage = verificationCodePage.validCodeEnter(validVerificationCode);
-        List<DataGenerator.Card> cards = ChooseCard(List.of(getCorrectCard1(), getCorrectCard2()));
+        List<DataGenerator.Card> cards = chooseCard(List.of(getCorrectCard1(), getCorrectCard2()));
         cardTo = cards.get(0);
         cardFrom = cards.get(1);
     }
@@ -45,13 +48,10 @@ public class TransferMoneyTest {
         int cardFromBalance = creditCardPage.getCardBalance(hiddenFromCard);
         int transferAmount = getTransferAmount(cardFromBalance);
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var creditCardPageAfterPay = transferPage.successTransferMoney(transferAmount, cardFrom.getNumber());
-        creditCardPageAfterPay.updateTransferPage();
-        creditCardPageAfterPay.cardInfo(hiddenToCard)
-                .shouldHave(Condition.exactText(hiddenToCard + ", баланс: " + String.valueOf(cardToBalance + transferAmount) + " р.\nПополнить"));
-        creditCardPageAfterPay.cardInfo(hiddenFromCard)
-                .shouldHave(Condition.exactText(hiddenFromCard + ", баланс: " + String.valueOf(cardFromBalance - transferAmount) + " р.\nПополнить"));
+        creditCardPageAfterPay.updateCreditCardPage();
+        assertAll(() -> assertEquals(cardToBalance + transferAmount, creditCardPageAfterPay.getCardBalance(hiddenToCard)),
+                () -> assertEquals(cardFromBalance - transferAmount, creditCardPageAfterPay.getCardBalance(hiddenFromCard)));
     }
 
     @Test
@@ -63,13 +63,10 @@ public class TransferMoneyTest {
         int cardToBalance = creditCardPage.getCardBalance(hiddenToCard);
         int cardFromBalance = creditCardPage.getCardBalance(hiddenFromCard);
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var creditCardPageAfterPay = transferPage.successTransferMoney(cardFromBalance, cardFrom.getNumber());
-        creditCardPageAfterPay.updateTransferPage();
-        creditCardPageAfterPay.cardInfo(hiddenToCard)
-                .shouldHave(Condition.exactText(hiddenToCard + ", баланс: " + String.valueOf(cardToBalance + cardFromBalance) + " р.\nПополнить"));
-        creditCardPageAfterPay.cardInfo(hiddenFromCard)
-                .shouldHave(Condition.exactText(hiddenFromCard + ", баланс: 0 р.\nПополнить"));
+        creditCardPageAfterPay.updateCreditCardPage();
+        assertAll(() -> assertEquals(cardToBalance + cardFromBalance, creditCardPageAfterPay.getCardBalance(hiddenToCard)),
+                () -> assertEquals(0, creditCardPageAfterPay.getCardBalance(hiddenFromCard)));
     }
 
     @Test
@@ -78,7 +75,6 @@ public class TransferMoneyTest {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithoutInfo();
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))
@@ -92,7 +88,6 @@ public class TransferMoneyTest {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithError(1, cardFrom.getNumber());
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))
@@ -105,7 +100,6 @@ public class TransferMoneyTest {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithError(0, cardFrom.getNumber());
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))
@@ -118,7 +112,6 @@ public class TransferMoneyTest {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithoutAmount(cardFrom.getNumber());
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))
@@ -131,7 +124,6 @@ public class TransferMoneyTest {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithError(1, "");
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))
@@ -147,7 +139,6 @@ public class TransferMoneyTest {
         int cardFromBalance = creditCardPage.getCardBalance(hiddenFromCard);
         int transferAmount = cardFromBalance + 1;
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
-        transferPage.transferToCardFieldGet().shouldHave(Condition.value(hiddenToCard));
         var errorNotification = transferPage.sendMoneyWithError(transferAmount, cardFrom.getNumber());
         errorNotification
                 .shouldBe(Condition.visible, Duration.ofSeconds(15))

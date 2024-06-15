@@ -32,7 +32,7 @@ public class DataGenerator {
         return rnd.nextInt(amount);
     }
 
-    public static List<Card> ChooseCard(List<Card> cards) {
+    public static List<Card> chooseCard(List<Card> cards) {
         int rand = rnd.nextInt(2);
         Card cardTo = cards.get(rand);
         Card cardFrom = cards.get(1 - rand);
