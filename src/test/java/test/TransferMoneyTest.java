@@ -2,7 +2,6 @@ package test;
 
 import com.codeborne.selenide.Condition;
 import data.DataGenerator;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,8 +14,8 @@ import java.util.List;
 import static com.codeborne.selenide.Selenide.open;
 import static data.DataGenerator.*;
 import static data.DataGenerator.CardInfo.*;
-import static data.DataGenerator.LogIn.*;
-import static data.DataGenerator.LogInCode.*;
+import static data.DataGenerator.LogIn.getCorrectUserLogInInfo;
+import static data.DataGenerator.LogInCode.getCorrectCode;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -38,8 +37,7 @@ public class TransferMoneyTest {
         if (creditCardPage.getCardBalance(hiddenFromCard) <= 0) {
             cardTo = cards.get(0);
             cardFrom = cards.get(1);
-        }
-        else {
+        } else {
             cardTo = cards.get(1);
             cardFrom = cards.get(0);
         }
@@ -47,7 +45,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should successfully transfer money")
-    void shouldSuccessfullyTransferMoney () {
+    void shouldSuccessfullyTransferMoney() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
         String hiddenFromCard = hiddenCard(cardFrom.getNumber());
 
@@ -63,7 +61,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should successfully transfer all money")
-    void shouldSuccessfullyTransferAllMoney () {
+    void shouldSuccessfullyTransferAllMoney() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
         String hiddenFromCard = hiddenCard(cardFrom.getNumber());
 
@@ -78,7 +76,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should error transfer money when send money without info")
-    void shouldErrorTransferMoneyWhenNoInfoTransfer () {
+    void shouldErrorTransferMoneyWhenNoInfoTransfer() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
@@ -115,7 +113,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should error transfer money when send money without amount")
-    void shouldErrorTransferMoneyWhenWithoutAmount () {
+    void shouldErrorTransferMoneyWhenWithoutAmount() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
@@ -127,7 +125,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should error transfer money when send money without card")
-    void shouldErrorTransferMoneyWhenWithoutCard () {
+    void shouldErrorTransferMoneyWhenWithoutCard() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
 
         var transferPage = creditCardPage.openTransferCardPage(hiddenToCard);
@@ -139,7 +137,7 @@ public class TransferMoneyTest {
 
     @Test
     @DisplayName("Should error transfer money when amount more balance")
-    void shouldErrorTransferMoneyWhenAmountMoreBalance () {
+    void shouldErrorTransferMoneyWhenAmountMoreBalance() {
         String hiddenToCard = hiddenCard(cardTo.getNumber());
         String hiddenFromCard = hiddenCard(cardFrom.getNumber());
 

@@ -1,6 +1,5 @@
 package pages;
 
-import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.SelenideElement;
 import data.DataGenerator;
 
@@ -11,11 +10,11 @@ public class VerificationCodePage {
     private SelenideElement codeField = $("[data-test-id='code'] input");
     private SelenideElement acceptButton = $("[data-test-id='action-verify']");
 
-    public VerificationCodePage () {
+    public VerificationCodePage() {
         acceptButton.shouldBe(visible);
     }
 
-    public CreditCardsPage validCodeEnter (DataGenerator.VerificationCode code) {
+    public CreditCardsPage validCodeEnter(DataGenerator.VerificationCode code) {
         codeField.setValue(code.getCode());
         acceptButton.click();
 

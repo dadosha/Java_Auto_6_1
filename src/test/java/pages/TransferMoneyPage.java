@@ -13,7 +13,8 @@ public class TransferMoneyPage {
     private SelenideElement acceptButton = $("[data-test-id='action-transfer']");
     private SelenideElement cancelButton = $("[data-test-id='action-cancel']");
     private SelenideElement errorNotification = $("[data-test-id='error-notification']");
-    public TransferMoneyPage () {
+
+    public TransferMoneyPage() {
         amountField.shouldBe(visible);
     }
 
@@ -21,32 +22,32 @@ public class TransferMoneyPage {
         toField.shouldHave(Condition.value(hiddenCard));
     }
 
-    public SelenideElement transferToCardFieldGet () {
+    public SelenideElement transferToCardFieldGet() {
         return toField;
     }
 
-    public void transferMoney (int amount, String cardFrom) {
+    public void transferMoney(int amount, String cardFrom) {
         amountField.setValue(String.valueOf(amount));
         fromField.setValue(cardFrom);
         acceptButton.click();
     }
 
-    public CreditCardsPage successTransferMoney (int amount, String cardFrom) {
+    public CreditCardsPage successTransferMoney(int amount, String cardFrom) {
         transferMoney(amount, cardFrom);
         return new CreditCardsPage();
     }
 
-    public SelenideElement sendMoneyWithError (int amount, String cardFrom) {
+    public SelenideElement sendMoneyWithError(int amount, String cardFrom) {
         transferMoney(amount, cardFrom);
         return errorNotification;
     }
 
-    public SelenideElement sendMoneyWithoutInfo () {
+    public SelenideElement sendMoneyWithoutInfo() {
         acceptButton.click();
         return errorNotification;
     }
 
-    public SelenideElement sendMoneyWithoutAmount (String cardFrom) {
+    public SelenideElement sendMoneyWithoutAmount(String cardFrom) {
         fromField.setValue(cardFrom);
         acceptButton.click();
         return errorNotification;
